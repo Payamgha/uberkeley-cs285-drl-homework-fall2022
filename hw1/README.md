@@ -27,7 +27,7 @@ See the homework pdf for more details.
 
 Tip: While debugging, you probably want to keep the flag `--video_log_freq -1` which will disable video logging and speed up the experiment. However, feel free to remove it to save videos of your awesome policy!
 
-If running on Colab, adjust the `#@params` in the `Args` class according to the commmand line arguments above.
+If running on Colab, adjust the `#@params` in the `Args` class according to the command line arguments above.
 
 ### Section 1 (Behavior Cloning)
 Command for problem 1:
