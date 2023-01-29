@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Module",
+            "name": "Run Behavior Clonning with DAgger for Ant-v4 problem",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/cs285/scripts/run_hw1.py",
