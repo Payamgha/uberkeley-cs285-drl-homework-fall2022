@@ -43,6 +43,15 @@ class PGAgent(BaseAgent):
         # using helper functions to compute qvals and advantages, and
         # return the train_log obtained from updating the policy
 
+        # 1. Estimate Q-values
+        q_values = self.calculate_q_vals(rewards_list)
+
+        # 2. Compute Advantages
+        advantages = self.estimate_advantage(observations, rewards_list, q_values, terminals)
+
+        # 3. Update policy
+        train_log = self.actor.update(observations, actions, advantages, q_values)
+
         return train_log
 
     def calculate_q_vals(self, rewards_list):
