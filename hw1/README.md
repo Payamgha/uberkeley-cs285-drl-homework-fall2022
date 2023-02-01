@@ -75,3 +75,8 @@ tensorboard --logdir data/run1,data/run2,data/run3...
 
 If running on Colab, you will be using the `%tensorboard` [line magic](https://ipython.readthedocs.io/en/stable/interactive/magics.html) to do the same thing; see the [notebook](cs285/scripts/run_hw1.ipynb) for more details.
 
+
+## Troubleshooting
+- [Issue] Getting an error that complaining about "'tuple' object has no attribute 'shape'":
+- [Solution] Ensure that you are installing all python packages with given version in the requirments; Install newer version of Python 3.10+
+
