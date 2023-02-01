@@ -78,13 +78,14 @@ class PGAgent(BaseAgent):
         # then flattened to a 1D numpy array.
 
         if not self.reward_to_go:
-            TODO
+            q_values = self._discounted_return(rewards_list)
 
         # Case 2: reward-to-go PG
         # Estimate Q^{pi}(s_t, a_t) by the discounted sum of rewards starting from t
         else:
-            TODO
+            q_values = self._discounted_cumsum(rewards_list)
 
+        
         return q_values
 
     def estimate_advantage(self, obs: np.ndarray, rews_list: np.ndarray, q_values: np.ndarray, terminals: np.ndarray):
@@ -163,8 +164,16 @@ class PGAgent(BaseAgent):
 
             Output: list where each index t contains sum_{t'=0}^T gamma^t' r_{t'}
         """
+        gamma = self.gamma
+        discounted_return = []
+        T = len(rewards)
+        for t in range(T):
+            gr = 0
+            for tp in range(T):
+                gr += (gamma ** tp) * rewards[tp]
+            discounted_return.append(gr)
 
-        return list_of_discounted_returns
+        return discounted_return
 
     def _discounted_cumsum(self, rewards):
         """
@@ -172,5 +181,13 @@ class PGAgent(BaseAgent):
             -takes a list of rewards {r_0, r_1, ..., r_t', ... r_T},
             -and returns a list where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
         """
+        gamma = self.gamma
+        discounted_cumsums = []
+        T = len(rewards)
+        for t in range(T):
+            gr = 0
+            for tp in range(t, T):
+                gr += (gamma ** tp) * rewards[tp]
+            discounted_cumsums.append(gr)
 
-        return list_of_discounted_cumsums
+        return discounted_cumsums
