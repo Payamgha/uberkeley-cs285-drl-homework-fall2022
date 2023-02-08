@@ -104,7 +104,10 @@ class PGAgent(BaseAgent):
             ## TODO: values were trained with standardized q_values, so ensure
                 ## that the predictions have the same mean and standard deviation as
                 ## the current batch of q_values
-            values = TODO
+            values_mean = np.mean(values_unnormalized)
+            values_std = np.std(values_unnormalized)
+            DIV_CONSTANT = 1e-8
+            values = (values_unnormalized - values_mean) / (values_std + DIV_CONSTANT)
 
             if self.gae_lambda is not None:
                 ## append a dummy T+1 value for simpler recursive calculation
