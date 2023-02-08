@@ -75,3 +75,9 @@ tensorboard --logdir data/run1,data/run2,data/run3...
 
 If running on Colab, you will be using the `%tensorboard` [line magic](https://ipython.readthedocs.io/en/stable/interactive/magics.html) to do the same thing; see the [notebook](cs285/scripts/run_hw1.ipynb) for more details.
 
+
+## Questions
+1. self.parameters()?
+2. What happen in discrete case?
+3. logstd why has been added?
+4. what if mean vs std
