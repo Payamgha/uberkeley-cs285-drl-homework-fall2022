@@ -42,7 +42,7 @@ class PGAgent(BaseAgent):
         # TODO: update the PG actor/policy using the given batch of data 
         # using helper functions to compute qvals and advantages, and
         # return the train_log obtained from updating the policy
-
+        train_log = None
         return train_log
 
     def calculate_q_vals(self, rewards_list):
@@ -69,12 +69,14 @@ class PGAgent(BaseAgent):
         # then flattened to a 1D numpy array.
 
         if not self.reward_to_go:
-            TODO
+            TODO = None
 
         # Case 2: reward-to-go PG
         # Estimate Q^{pi}(s_t, a_t) by the discounted sum of rewards starting from t
         else:
-            TODO
+            TODO = None
+
+        q_values = None
 
         return q_values
 
@@ -94,6 +96,7 @@ class PGAgent(BaseAgent):
             ## TODO: values were trained with standardized q_values, so ensure
                 ## that the predictions have the same mean and standard deviation as
                 ## the current batch of q_values
+            TODO = None
             values = TODO
 
             if self.gae_lambda is not None:
@@ -109,6 +112,7 @@ class PGAgent(BaseAgent):
                 advantages = np.zeros(batch_size + 1)
 
                 for i in reversed(range(batch_size)):
+                    pass
                     ## TODO: recursively compute advantage estimates starting from
                         ## timestep T.
                     ## HINT: use terminals to handle edge cases. terminals[i]
@@ -129,6 +133,7 @@ class PGAgent(BaseAgent):
         # Normalize the resulting advantages to have a mean of zero
         # and a standard deviation of one
         if self.standardize_advantages:
+            TODO = None
             advantages = TODO
 
         return advantages
@@ -154,7 +159,8 @@ class PGAgent(BaseAgent):
 
             Output: list where each index t contains sum_{t'=0}^T gamma^t' r_{t'}
         """
-
+        # TODO why is this incomplete?  No TODO.
+        list_of_discounted_returns = None
         return list_of_discounted_returns
 
     def _discounted_cumsum(self, rewards):
@@ -164,4 +170,6 @@ class PGAgent(BaseAgent):
             -and returns a list where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
         """
 
+        # TODO why is this incomplete?  No TODO.
+        list_of_discounted_cumsums = None
         return list_of_discounted_cumsums

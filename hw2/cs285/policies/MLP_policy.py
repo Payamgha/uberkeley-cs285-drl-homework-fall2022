@@ -140,7 +140,7 @@ class MLPPolicyPG(MLPPolicy):
         # HINT2: you will want to use the `log_prob` method on the distribution returned
             # by the `forward` method
 
-        TODO
+        TODO = None
 
         if self.nn_baseline:
             ## TODO: update the neural network baseline using the q_values as
@@ -150,7 +150,7 @@ class MLPPolicyPG(MLPPolicy):
             ## Note: You will need to convert the targets into a tensor using
                 ## ptu.from_numpy before using it in the loss
 
-            TODO
+            TODO = None
 
         train_log = {
             'Training Loss': ptu.to_numpy(loss),
