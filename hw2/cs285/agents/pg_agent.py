@@ -133,7 +133,7 @@ class PGAgent(BaseAgent):
 
             else:
                 ## TODO: compute advantage estimates using q_values, and values as baselines
-                advantages = TODO
+                advantages = q_values - values
 
         # Else, just set the advantage to [Q]
         else:
@@ -142,7 +142,9 @@ class PGAgent(BaseAgent):
         # Normalize the resulting advantages to have a mean of zero
         # and a standard deviation of one
         if self.standardize_advantages:
-            advantages = TODO
+            advantages_mean = np.mean(advantages)
+            advantages_std = np.std(advantages)
+            advantages = (advantages - advantages_mean) / (advantages_std + DIV_CONSTANT)
 
         return advantages
 
