@@ -39,10 +39,21 @@ class PGAgent(BaseAgent):
             and the calculated qvals/advantages that come from the seen rewards.
         """
 
-        # TODO: update the PG actor/policy using the given batch of data 
+        # HW2: update the PG actor/policy using the given batch of data
         # using helper functions to compute qvals and advantages, and
         # return the train_log obtained from updating the policy
-        train_log = None
+
+        # 1. Estimate Q-values
+        q_values = self.calculate_q_vals(rewards_list)
+
+        # 2. Compute Advantages
+        advantages = self.estimate_advantage(
+            observations, rewards_list, q_values, terminals)
+
+        # 3. Update policy
+        train_log = self.actor.update(
+            observations, actions, advantages, q_values)
+
         return train_log
 
     def calculate_q_vals(self, rewards_list):
@@ -52,12 +63,12 @@ class PGAgent(BaseAgent):
         """
 
         # TODO: return the estimated qvals based on the given rewards, using
-            # either the full trajectory-based estimator or the reward-to-go
-            # estimator
+        # either the full trajectory-based estimator or the reward-to-go
+        # estimator
 
         # Note: rewards_list is a list of lists of rewards with the inner list
         # being the list of rewards for a single trajectory.
-        
+
         # HINT: use the helper functions self._discounted_return and
         # self._discounted_cumsum (you will need to implement these).
 
@@ -69,7 +80,10 @@ class PGAgent(BaseAgent):
         # then flattened to a 1D numpy array.
 
         if not self.reward_to_go:
-            TODO = None
+
+            q_values = np.empty(0)
+            for reward in rewards_list:
+                q_values = np.append(q_values, self._discounted_cumsum(reward))
 
         # Case 2: reward-to-go PG
         # Estimate Q^{pi}(s_t, a_t) by the discounted sum of rewards starting from t
@@ -170,6 +184,9 @@ class PGAgent(BaseAgent):
             -and returns a list where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
         """
 
-        # TODO why is this incomplete?  No TODO.
-        list_of_discounted_cumsums = None
+        # HW2
+        discount = np.full(rewards.shape, self.gamma)
+        discount[0] = 1
+        discount = np.cumprod(discount)
+        list_of_discounted_cumsums = np.cumsum(discount * rewards)
         return list_of_discounted_cumsums
