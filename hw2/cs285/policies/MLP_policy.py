@@ -92,9 +92,10 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             observation = obs
         else:
             observation = obs[None]
-
+        dist_actions = self.forward(ptu.from_numpy(observation))
+        actions = dist_actions.sample()
         # TODO return the action that the policy prescribes
-        return ptu.to_numpy(self.forward(ptu.from_numpy(observation)))
+        return ptu.to_numpy(actions)
 
     # update/train this policy
     def update(self, observations, actions, **kwargs):
@@ -143,7 +144,16 @@ class MLPPolicyPG(MLPPolicy):
         # HINT2: you will want to use the `log_prob` method on the distribution returned
         # by the `forward` method
 
-        TODO
+        dist_actions_pred = self.forward(observations)
+        log_prob_actions_pred = dist_actions_pred.log_prob(actions)
+        # Compute loss
+        loss = -torch.mean(log_prob_actions_pred * advantages)
+        # Reset gradients
+        self.optimizer.zero_grad()
+        # Backprob
+        loss.backward()
+        # Optimize network
+        self.optimizer.step()
 
         if self.nn_baseline:
             # TODO: update the neural network baseline using the q_values as
@@ -154,11 +164,12 @@ class MLPPolicyPG(MLPPolicy):
             # ptu.from_numpy before using it in the loss
             values_target = ptu.from_numpy(standardize(q_values))
 
-            self.baseline_optimizer.zero_grad()  # Reset gradients
             values_unnormalized = self.run_baseline_prediction(observations)
             values_pred = ptu.from_numpy(standardize(values_unnormalized))
             # Compute loss
             loss = self.baseline_loss.forward(values_pred, values_target)
+            # Reset gradients
+            self.baseline_optimizer.zero_grad()
             # Backprob
             self.baseline_loss.backward()
             # Optimize network
