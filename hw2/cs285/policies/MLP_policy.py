@@ -104,20 +104,10 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
     # return more flexible objects, such as a
     # `torch.distributions.Distribution` object. It's up to you!
     def forward(self, observation: torch.FloatTensor):
+        # COPIED FROM HW1
         if self.discrete:
-            logits = self.logits_na(observation)
-            action_distribution = distributions.Categorical(logits=logits)
-            return action_distribution
-        else:
-            batch_mean = self.mean_net(observation)
-            scale_tril = torch.diag(torch.exp(self.logstd))
-            batch_dim = batch_mean.shape[0]
-            batch_scale_tril = scale_tril.repeat(batch_dim, 1, 1)
-            action_distribution = distributions.MultivariateNormal(
-                batch_mean,
-                scale_tril=batch_scale_tril,
-            )
-            return action_distribution
+            return self.logits_na(observation)
+        return self.mean_net(observation)
 
 #####################################################
 #####################################################
