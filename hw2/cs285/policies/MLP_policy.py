@@ -167,11 +167,12 @@ class MLPPolicyPG(MLPPolicy):
             values_unnormalized = self.run_baseline_prediction(observations)
             values_pred = ptu.from_numpy(standardize(values_unnormalized))
             # Compute loss
-            loss = self.baseline_loss.forward(values_pred, values_target)
+            baseline_loss = self.baseline_loss.forward(
+                values_pred, values_target)
             # Reset gradients
             self.baseline_optimizer.zero_grad()
             # Backprob
-            self.baseline_loss.backward()
+            baseline_loss.backward()
             # Optimize network
             self.baseline_optimizer.step()
 
