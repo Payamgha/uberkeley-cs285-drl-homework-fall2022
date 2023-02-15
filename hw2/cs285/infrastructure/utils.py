@@ -171,6 +171,23 @@ def normalize(data, mean, std, eps=1e-8):
 def unnormalize(data, mean, std):
     return data*std+mean
 
+
+def standardize(data: np.array) -> np.array:
+    """
+    Standardize values; i.e., normalize values such that its mean is 0
+    and its standard deviation is 1.
+
+    Args:
+        data (numpy.array): data array
+
+    Returns:
+        numpy.array: standardized values of data
+    """
+    mean = np.mean(data)
+    std = np.std(data)
+    return normalize(data, mean, std, eps=1e-8):
+
+
 def add_noise(data_inp, noiseToSignal=0.01):
 
     data = copy.deepcopy(data_inp) #(num data points, dim)
