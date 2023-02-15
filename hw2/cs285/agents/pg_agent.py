@@ -183,13 +183,12 @@ class PGAgent(BaseAgent):
         gamma = self.gamma
         discounted_return = []
         T = len(rewards)
-        for _ in range(T):
-            gr = 0
-            for tp in range(T):
-                gr += (gamma ** tp) * rewards[tp]
-            discounted_return.append(gr)
-
-        return discounted_return
+        discounted_return = 0
+        for tp in range(T):
+            discounted_return += (gamma ** tp) * rewards[tp]
+        # Make a list with T members
+        list_of_discounted_return = [discounted_return] * T
+        return list_of_discounted_return
 
     def _discounted_cumsum(self, rewards):
         """
@@ -198,12 +197,12 @@ class PGAgent(BaseAgent):
             -and returns a list where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
         """
         gamma = self.gamma
-        discounted_cumsums = []
+        list_of_discounted_cumsums = []
         T = len(rewards)
         for t in range(T):
-            gr = 0
+            discounted_cumsums = 0
             for tp in range(t, T):
-                gr += (gamma ** tp) * rewards[tp]
-            discounted_cumsums.append(gr)
+                discounted_cumsums += (gamma ** (tp - t)) * rewards[tp]
+            list_of_discounted_cumsums.append(discounted_cumsums)
 
-        return discounted_cumsums
+        return list_of_discounted_cumsums
