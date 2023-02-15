@@ -10,6 +10,7 @@ from torch import distributions
 
 from cs285.infrastructure import pytorch_util as ptu
 from cs285.policies.base_policy import BasePolicy
+from cs285.infrastructure.utils import standardize
 
 
 class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
@@ -50,10 +51,11 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         else:
             self.logits_na = None
             self.mean_net = ptu.build_mlp(input_size=self.ob_dim,
-                                      output_size=self.ac_dim,
-                                      n_layers=self.n_layers, size=self.size)
+                                          output_size=self.ac_dim,
+                                          n_layers=self.n_layers, size=self.size)
             self.logstd = nn.Parameter(
-                torch.zeros(self.ac_dim, dtype=torch.float32, device=ptu.device)
+                torch.zeros(self.ac_dim, dtype=torch.float32,
+                            device=ptu.device)
             )
             self.mean_net.to(ptu.device)
             self.logstd.to(ptu.device)
@@ -122,6 +124,7 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
 #####################################################
 #####################################################
 
+
 class MLPPolicyPG(MLPPolicy):
     def __init__(self, ac_dim, ob_dim, n_layers, size, **kwargs):
 
@@ -135,22 +138,31 @@ class MLPPolicyPG(MLPPolicy):
 
         # TODO: update the policy using policy gradient
         # HINT1: Recall that the expression that we want to MAXIMIZE
-            # is the expectation over collected trajectories of:
-            # sum_{t=0}^{T-1} [grad [log pi(a_t|s_t) * (Q_t - b_t)]]
+        # is the expectation over collected trajectories of:
+        # sum_{t=0}^{T-1} [grad [log pi(a_t|s_t) * (Q_t - b_t)]]
         # HINT2: you will want to use the `log_prob` method on the distribution returned
-            # by the `forward` method
+        # by the `forward` method
 
         TODO
 
         if self.nn_baseline:
-            ## TODO: update the neural network baseline using the q_values as
-            ## targets. The q_values should first be normalized to have a mean
-            ## of zero and a standard deviation of one.
+            # TODO: update the neural network baseline using the q_values as
+            # targets. The q_values should first be normalized to have a mean
+            # of zero and a standard deviation of one.
 
-            ## Note: You will need to convert the targets into a tensor using
-                ## ptu.from_numpy before using it in the loss
+            # Note: You will need to convert the targets into a tensor using
+            # ptu.from_numpy before using it in the loss
+            values_target = ptu.from_numpy(standardize(q_values))
 
-            TODO
+            self.baseline_optimizer.zero_grad()  # Reset gradients
+            values_unnormalized = self.run_baseline_prediction(observations)
+            values_pred = ptu.from_numpy(standardize(values_unnormalized))
+            # Compute loss
+            loss = self.baseline_loss.forward(values_pred, values_target)
+            # Backprob
+            self.baseline_loss.backward()
+            # Optimize network
+            self.baseline_optimizer.step()
 
         train_log = {
             'Training Loss': ptu.to_numpy(loss),
