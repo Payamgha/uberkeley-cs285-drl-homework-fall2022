@@ -127,7 +127,12 @@ class MLPPolicySL(MLPPolicy):
         self.optimizer.zero_grad()  # Reset gradients
         actions_pred = self.forward(ptu.from_numpy(observations))
         actions_target = ptu.from_numpy(actions)
+        # Compute loss
         loss = self.loss.forward(actions_pred, actions_target)
+        # Backprob 
+        loss.backward()
+        # Optimize network
+        self.optimizer.step()
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
